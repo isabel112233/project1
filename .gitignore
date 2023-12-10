@@ -1,0 +1,6 @@
+.venv
+rawdata
+datasource
+__pycache__
+*.db
+*.csv
