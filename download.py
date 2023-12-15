@@ -223,6 +223,23 @@ def updata_sqlite_data()->None:
         cursor.execute(sql,values)  #連線資料表
         conn.commit()
         df.to_sql(datatype, conn, if_exists='append', index=False) 
+
+
+
+
+def select_data()->list[tuple]:
+    conn = sqlite3.connect("proj1_creditcard.db")
+    cursor = conn.cursor()
+    sql = '''
+        select * 
+        from age
+        where 年月 like '202309%'
+        '''
+    cursor.execute(sql)
+    rows= cursor.fetchall()
+    cursor.close()
+    return rows
+
            
                       
     
@@ -230,4 +247,5 @@ def updata_sqlite_data()->None:
 #--------------------------------------------------
 if __name__ == '__main__':
     updata_sqlite_data()
+    
     
