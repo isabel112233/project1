@@ -243,17 +243,17 @@ def lastest_datetime_data()->list[tuple]:
 
 #===============搜尋資料庫中資料==================
 
-def search_data(word:str)->list[tuple]:
-    
+def search_data(start,end,datatype:str)->list[tuple]:
+    column_names(creditTreeView, 4, DataType[datatype])
     conn = sqlite3.connect("proj1_creditcard.db")
     cursor = conn.cursor()
-    sql = '''
-        SELECT 年月,地區,產業別,性別,年齡層,交易筆數,交易金額
+    sql = f'''
+        SELECT 年月,地區,產業別,性別,{DataType[datatype]},交易筆數,交易金額
         from {datatype}
-        WHERE 年月 between(start,end)
+        WHERE 年月 between {start} and {end}
         '''
     
-    cursor.execute(sql,[f'%{word}%'])
+    cursor.execute(sql)
     rows= cursor.fetchall()
     cursor.close()
     conn.close
@@ -262,8 +262,6 @@ def search_data(word:str)->list[tuple]:
                       
     
 
-#--------------------------------------------------
-if __name__ == '__main__':
-    updata_sqlite_data()
+
     
     

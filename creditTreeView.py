@@ -42,7 +42,7 @@ class CreditTreeView(ttk.Treeview):
         self.column("性別", width=50)
         self.column("年齡層", width=100)
         self.column("交易筆數", width=100)
-        self.column("交易金額", width=100)
+        self.column("交易金額", width=150)
 
         self.heading("#0", text="序號")
         self.heading("年月", text="年月")

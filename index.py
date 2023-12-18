@@ -20,10 +20,6 @@ class Window(tk.Tk):
         style.configure('TCombobox', font=('Arial', 22, 'bold'))
         style.configure('TLabel',font=('Arial', 12, 'bold'))
         DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
-
-
-
-    
         
 
         topframe = tk.Frame()
@@ -33,25 +29,25 @@ class Window(tk.Tk):
         self.startmonthVar = tk.StringVar()
         self.endyearVar = tk.StringVar()
         self.endmonthVar = tk.StringVar()
-        datatypeVar = tk.StringVar()
+        self.datatypeVar = tk.StringVar()
 
 
-        self.titleLabel = ttk.Label(topframe,text="信用卡消費樣態",
+        titleLabel = ttk.Label(topframe,text="信用卡消費樣態",
                                         font=('Arial',20,'bold'))
-        self.titleLabel.grid(column=0, row=0,columnspan=12)
+        titleLabel.grid(column=0, row=0,columnspan=12)
         self.datatypeLabel = ttk.Label(topframe,text="資料類別:",width=8,
                     style='TLabel')
         self.datatypeLabel.grid(column=0, row=1,padx=5,pady=12)
 
         self.datatypeCombobox = ttk.Combobox(topframe,width=6,
-                                        textvariable=datatypeVar,
+                                        textvariable=self.datatypeVar,
                                         values=[i for i in DataType],
                                         style='TCombobox')
         self.datatypeCombobox.grid(column=1, row=1,pady=12)
 
-        self.yearLabel = ttk.Label(topframe,text="年月:",width=6,
+        yearLabel = ttk.Label(topframe,text="年月:",width=6,
                             style='TLabel')
-        self.yearLabel.grid(column=2, row=1,padx=5,pady=12)
+        yearLabel.grid(column=2, row=1,padx=5,pady=12)
         self.startyearCombobox = ttk.Combobox(topframe,width=6,
                                         textvariable=self.startyearVar,
                                         values=[i for i in range(2014,2024)],
@@ -75,62 +71,55 @@ class Window(tk.Tk):
                                         style='TCombobox')
         self.endmonthCombobox.grid(column=7, row=1,pady=12)
 
-        self.selectBtn = ttk.Button(topframe,text="查詢",width=6,)
-                            
-        self.selectBtn.grid(column=8, row=1,pady=12,padx=8)
-
-        self.selectBtn.bind()
+        selectBtn = ttk.Button(topframe, text="查詢", width=6, command=lambda: self.OnbuttonClick())
+        selectBtn.grid(column=8, row=1, pady=12, padx=8)
 
         column_names = ['年月','地區','產業別','性別','年齡層','交易筆數','交易金額']
 
         textFrame = tk.Frame(self)
 
-        self.creditTreeView = CreditTreeView(textFrame,show="headings",
-                        columns=column_names,height=20)   #height 設定為20行
+        self.creditTreeView = CreditTreeView(textFrame, show="headings", columns=column_names, height=20)
+        self.creditTreeView.pack(side='left', fill='both', expand=True)  # 修改这一行，添加 fill 和 expand 参数
 
-        #設定捲軸
-        
+        vsb = ttk.Scrollbar(textFrame, orient="vertical", command=self.creditTreeView.yview)
+        vsb.pack(side='left', fill='y')
+        self.creditTreeView.configure(yscrollcommand=vsb.set)
 
-        self.creditTreeView.pack(side='left')
-        vsb = ttk.Scrollbar(textFrame,orient="vertical",command=self.credittreeview.yview)
-        vsb.pack(side='left',fill='y')        
-        self.creditTreeView.configure(yscrollcommand=vsb.set)        
-        textFrame.pack(fill='both',expand=1)  
-
+        textFrame.pack(pady=(0, 20), padx=10)
      ###取得查詢值
 
-    def button_event(start,end,datatype,**kwargs)->(tuple):
+    def OnbuttonClick(self):
         datatype = self.datatypeCombobox.get()
         start = self.startyearCombobox.get() + self.startmonthCombobox.get()
         end = self.endyearCombobox.get() + self.endmonthCombobox.get()
-        month = (int(end[:4])-int(start[:4])) * 12 +(int(end[4:6])-int(start[4:6])) + 1
-        
-        if month >12  or month < 1 :
-            if month >12 :
-                print (f'請選擇一年內資料:{month}')
-            else :
-                print (f'=迄年度輸入錯誤:{month}')
-        return (start,end,datatype)
+        month = (int(end[:4]) - int(start[:4])) * 12 + (int(end[4:6]) - int(start[4:6])) + 1
+        print(start, end, datatype)
 
-
-
-
-
-
+        if datatype == "" and start == "" and end == "":
+            lastest_data = download.lastest_datetime_data()
+            self.creditTreeView.update_content(lastest_data)
+        else:
+            if month > 12:
+                print(f'請選擇一年內資料:{month}')
+            if month < 0:
+                print(f'迄年度輸入錯誤:{month}')
+            else:
+                search_data = download.search_data(start, end, datatype)
+                print("取得資料")
+                self.creditTreeView.update_content(search_data) 
 
 #===============主執行程式=================
 
 def main():  
       
     def update_data(w:Window)->None:                             
-        download.updata_sqlite_data() 
         
         #===========更新TreeView資料                  
         lastest_data = download.lastest_datetime_data()
         w.creditTreeView.update_content(lastest_data)
         
     window = Window()                             
-    window.title('信用卡消費資料')
+    window.title('信用卡消費樣態')
     window.geometry('600x300')
     window.resizable(width=False,height=False)
     update_data(window)                           #執行程序1-主執行程式
