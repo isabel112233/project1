@@ -244,7 +244,7 @@ def lastest_datetime_data()->list[tuple]:
 #===============搜尋資料庫中資料==================
 
 def search_data(start,end,datatype:str)->list[tuple]:
-    column_names(creditTreeView, 4, DataType[datatype])
+    
     conn = sqlite3.connect("proj1_creditcard.db")
     cursor = conn.cursor()
     sql = f'''

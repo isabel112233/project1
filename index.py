@@ -16,9 +16,9 @@ class Window(tk.Tk):
         #------------------------------------------       
 
         #=================建立介面-==============
-        style = ttk.Style()
-        style.configure('TCombobox', font=('Arial', 22, 'bold'))
-        style.configure('TLabel',font=('Arial', 12, 'bold'))
+        label_font =  ('Arial', 14, 'bold') 
+        combobox_font= ('Arial', 12, 'bold') 
+
         DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
         
 
@@ -33,45 +33,45 @@ class Window(tk.Tk):
 
 
         titleLabel = ttk.Label(topframe,text="信用卡消費樣態",
-                                        font=('Arial',20,'bold'))
+                                        font=('Arial',20,'bold'),foreground='gray')
         titleLabel.grid(column=0, row=0,columnspan=12)
         self.datatypeLabel = ttk.Label(topframe,text="資料類別:",width=8,
-                    style='TLabel')
+                    font=label_font ,foreground='gray')
         self.datatypeLabel.grid(column=0, row=1,padx=5,pady=12)
 
         self.datatypeCombobox = ttk.Combobox(topframe,width=6,
                                         textvariable=self.datatypeVar,
                                         values=[i for i in DataType],
-                                        style='TCombobox')
+                                        font=combobox_font)
         self.datatypeCombobox.grid(column=1, row=1,pady=12)
 
         yearLabel = ttk.Label(topframe,text="年月:",width=6,
-                            style='TLabel')
+                            font=label_font ,foreground='gray')
         yearLabel.grid(column=2, row=1,padx=5,pady=12)
         self.startyearCombobox = ttk.Combobox(topframe,width=6,
                                         textvariable=self.startyearVar,
                                         values=[i for i in range(2014,2024)],
-                                        style='TCombobox')
+                                        font=combobox_font)
         self.startyearCombobox.grid(column=3, row=1,pady=12)
         self.startmonthCombobox = ttk.Combobox(topframe,width=3,
                                         textvariable=self.startmonthVar,
                                         values=[str(i).zfill(2) for i in range(1,13)],
-                                        style='TCombobox')
+                                        font=combobox_font)
         self.startmonthCombobox.grid(column=4, row=1,pady=12)
         yearLabel = ttk.Label(topframe,text="~",width=1,
-                            style='TLabel').grid(column=5, row=1,padx=5,pady=12)
+                            font=label_font ).grid(column=5, row=1,padx=5,pady=12)
         self.endyearCombobox = ttk.Combobox(topframe,width=6,
                                     textvariable=self.endyearVar,
                                         values=[i for i in range(2014,2024)],
-                                        style='TCombobox', state='readonly')
+                                        font=combobox_font, state='readonly')
         self.endyearCombobox.grid(column=6, row=1,pady=12)
         self.endmonthCombobox = ttk.Combobox(topframe,width=3,
                                         textvariable=self.endmonthVar,
                                         values=[str(i).zfill(2) for i in range(1,13)],
-                                        style='TCombobox')
+                                        font=combobox_font)
         self.endmonthCombobox.grid(column=7, row=1,pady=12)
 
-        selectBtn = ttk.Button(topframe, text="查詢", width=6, command=lambda: self.OnbuttonClick())
+        selectBtn = ttk.Button(topframe, text="查詢", width=8, command=lambda: self.OnbuttonClick())
         selectBtn.grid(column=8, row=1, pady=12, padx=8)
 
         column_names = ['年月','地區','產業別','性別','年齡層','交易筆數','交易金額']
@@ -88,7 +88,7 @@ class Window(tk.Tk):
         textFrame.pack(pady=(0, 20), padx=10)
      ###取得查詢值
 
-    def OnbuttonClick(self):
+    def OnbuttonClick(self):        
         datatype = self.datatypeCombobox.get()
         start = self.startyearCombobox.get() + self.startmonthCombobox.get()
         end = self.endyearCombobox.get() + self.endmonthCombobox.get()
@@ -106,8 +106,8 @@ class Window(tk.Tk):
             else:
                 search_data = download.search_data(start, end, datatype)
                 print("取得資料")
-                self.creditTreeView.update_content(search_data) 
-
+                self.creditTreeView.update_content(search_data,datatype) 
+                
 #===============主執行程式=================
 
 def main():  
@@ -116,6 +116,7 @@ def main():
         
         #===========更新TreeView資料                  
         lastest_data = download.lastest_datetime_data()
+        print(lastest_data.column)
         w.creditTreeView.update_content(lastest_data)
         
     window = Window()                             

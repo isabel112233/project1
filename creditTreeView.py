@@ -56,17 +56,24 @@ class CreditTreeView(ttk.Treeview):
 
        
 
-    def update_content(self,year_datas):
+    def update_content(self,year_datas,datatype):
         
         '''
         更新內容
         '''
         #清除所有內容
         for i in self.get_children():
-            self.delete(i)
-        
+            self.delete(i)  
+
+        DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
+        new_colnames = ['年月','地區','產業別','性別',DataType[datatype],'交易筆數','交易金額']
+        for i in new_colnames :
+            self.heading("#0", text="序號")
+            self.heading(i,text = i)
+       
         for index,年月 in enumerate(year_datas):
-            self.insert('','end',text=f"abc{index}",values=年月)       
+            self.insert('','end',text=f"abc{index}",values=年月)   
+        
     
 
 
