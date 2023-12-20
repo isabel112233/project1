@@ -13,18 +13,24 @@ class CreditTreeView(ttk.Treeview):
 
         ###取得查詢值
 
-        def button_event(start,end,datatype,**kwargs)->(tuple):
-            datatype = self.datatypeCombobox.get()
-            start = self.startyearCombobox.get() + self.startmonthCombobox.get()
-            end = self.endyearCombobox.get() + self.endmonthCombobox.get()
-            month = (int(end[:4])-int(start[:4])) * 12 +(int(end[4:6])-int(start[4:6])) + 1
+        #def button_event(start,end,datatype,**kwargs)->(tuple):
+        #    DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
+        #    new_colnames = ['年月','地區','產業別','性別',DataType[datatype],'交易筆數','交易金額']
+        #    datatype = self.datatypeCombobox.get()
+        #    start = self.startyearCombobox.get() + self.startmonthCombobox.get()
+        #    end = self.endyearCombobox.get() + self.endmonthCombobox.get()
+        #    month = (int(end[:4])-int(start[:4])) * 12 +(int(end[4:6])-int(start[4:6])) + 1
             
-            if month >12  or month < 1 :
-                if month >12 :
-                    print (f'請選擇一年內資料:{month}')
-                else :
-                    print (f'=迄年度輸入錯誤:{month}')
-            return (start,end,datatype)
+        #    if month >12  or month < 1 :
+        #        if month >12 :
+        #            print (f'請選擇一年內資料:{month}')
+        #        else :
+         #           print (f'=迄年度輸入錯誤:{month}')
+            
+        #    for i in new_colnames :
+        #        self.heading("#0", text="序號")
+        #        self.heading(i,text = i)
+        #    return (start,end,datatype)
 
         
         #------設定欄位名稱---------------        
@@ -56,22 +62,18 @@ class CreditTreeView(ttk.Treeview):
 
        
 
-    def update_content(self,year_datas,datatype):
+    def update_content(self,year_datas):
+        
         
         '''
         更新內容
         '''
         #清除所有內容
         for i in self.get_children():
-            self.delete(i)  
-
-        DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
-        new_colnames = ['年月','地區','產業別','性別',DataType[datatype],'交易筆數','交易金額']
-        for i in new_colnames :
-            self.heading("#0", text="序號")
-            self.heading(i,text = i)
+            self.delete(i) 
        
         for index,年月 in enumerate(year_datas):
+            
             self.insert('','end',text=f"abc{index}",values=年月)   
         
     

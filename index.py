@@ -88,12 +88,22 @@ class Window(tk.Tk):
         textFrame.pack(pady=(0, 20), padx=10)
      ###取得查詢值
 
-    def OnbuttonClick(self):        
+    def OnbuttonClick(self):   
+           
         datatype = self.datatypeCombobox.get()
         start = self.startyearCombobox.get() + self.startmonthCombobox.get()
         end = self.endyearCombobox.get() + self.endmonthCombobox.get()
         month = (int(end[:4]) - int(start[:4])) * 12 + (int(end[4:6]) - int(start[4:6])) + 1
         print(start, end, datatype)
+        DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
+        new_colnames = ['年月','地區','產業別','性別',DataType[datatype],'交易筆數','交易金額']  
+        for i, colname in enumerate(new_colnames):
+            if i == 0:                
+                CreditTreeView.heading("#0", text="序號")
+            else:
+                column_id = "#" + str(i)
+                CreditTreeView.heading(column_id, text=colname)
+                        
 
         if datatype == "" and start == "" and end == "":
             lastest_data = download.lastest_datetime_data()
@@ -106,7 +116,10 @@ class Window(tk.Tk):
             else:
                 search_data = download.search_data(start, end, datatype)
                 print("取得資料")
-                self.creditTreeView.update_content(search_data,datatype) 
+                self.creditTreeView.update_content(search_data) 
+                DataType = {'age':'年齡層', 'income':'年收入', 'job':'職業類別', 'education':'教育程度類別'}
+                new_colnames = ['年月','地區','產業別','性別',{DataType[datatype]},'交易筆數','交易金額'] 
+                
                 
 #===============主執行程式=================
 
@@ -116,12 +129,11 @@ def main():
         
         #===========更新TreeView資料                  
         lastest_data = download.lastest_datetime_data()
-        print(lastest_data.column)
         w.creditTreeView.update_content(lastest_data)
         
     window = Window()                             
     window.title('信用卡消費樣態')
-    window.geometry('600x300')
+    #window.geometry('600x300')
     window.resizable(width=False,height=False)
     update_data(window)                           #執行程序1-主執行程式
     window.mainloop()
