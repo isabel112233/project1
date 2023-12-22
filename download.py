@@ -230,6 +230,7 @@ def updata_sqlite_data()->None:
 #=================讀取資料庫資料================
 
 def lastest_datetime_data()->list[tuple]:
+    print('讀取資料')
     conn = sqlite3.connect("proj1_creditcard.db")
     cursor = conn.cursor()
     sql = '''
@@ -237,14 +238,17 @@ def lastest_datetime_data()->list[tuple]:
         FROM age
         '''
     cursor.execute(sql)
+    #rows = pd.read_sql(sql, conn)
     rows= cursor.fetchall()
     cursor.close()
     return rows
 
+    
+
 #===============搜尋資料庫中資料==================
 
 def search_data(start,end,datatype:str)->list[tuple]:
-    
+    print('搜尋資料')
     conn = sqlite3.connect("proj1_creditcard.db")
     cursor = conn.cursor()
     sql = f'''
@@ -255,10 +259,10 @@ def search_data(start,end,datatype:str)->list[tuple]:
     
     cursor.execute(sql)
     rows= cursor.fetchall()
+    #rows = pd.read_sql(sql, conn)
     cursor.close()
     conn.close
     return rows
-           
                       
     
 
